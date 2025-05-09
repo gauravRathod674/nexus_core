@@ -8,6 +8,7 @@ from models.items import LibraryItem, ItemStatus, PrintedBook
 from models.transactions import BorrowingTransaction, TransactionStatus
 from models.reservation import Reservation, ReservationStatus
 from .singleton import Singleton
+from patterns.observer.notification_center import NotificationCenter
 
 
 class TransactionManager(Singleton):
@@ -26,7 +27,7 @@ class TransactionManager(Singleton):
 
         self.transactions = []  # list of BorrowingTransaction
         self.reservation_queues = {}  # isbn -> list of Reservation
-        self._initialized = True
+        self._initialized = True    
 
     # ─── Borrow ────────────────────────────────────────────────────────────────
     def borrow_item(self,  user: "LibraryUser", item: "LibraryItem"):
@@ -154,25 +155,28 @@ class TransactionManager(Singleton):
         return None
 
     def _activate_hold(self, item: LibraryItem, reservation: Reservation):
-        """Mark a reservation as active and set book status."""
+        """Mark a reservation as active and set book status + notify user."""
         reservation.activate_hold()
         item.update_status(ItemStatus.RESERVED)
+        
+        # Notify the user their reservation is now available
+        user = self._find_user_by_name(reservation.user_name)
+        NotificationCenter.get_subject().notify('reservation_available', user=user, item=item)
+
 
     def _process_next_reservation(self, item: LibraryItem):
-        """
-        After a book is returned or revoked, find the next reserver:
-          - expire old holds
-          - activate the next pending one
-          - or mark the book AVAILABLE if no one’s waiting
-        """
         queue = self.reservation_queues.get(item.isbn, [])
 
-        # 1) Expire the current active hold if time’s up
+        # 1) Expire active hold if it's over
         if queue and queue[0].is_hold_over():
-            queue[0].expire()
+            expired_res = queue[0]
+            expired_res.expire()
+            from patterns.observer.notification_center import NotificationCenter
+            user = self._find_user_by_name(expired_res.user_name)
+            NotificationCenter.get_subject().notify('reservation_expired', user=user, item=item)
             queue.pop(0)
 
-        # 2) Promote the next pending reservation
+        # 2) Promote next pending
         while queue:
             candidate = queue[0]
             if candidate.status == ReservationStatus.PENDING:
@@ -180,8 +184,13 @@ class TransactionManager(Singleton):
                 return
             queue.pop(0)
 
-        # 3) No more in queue → free up the item
         item.update_status(ItemStatus.AVAILABLE)
+
+    def _find_user_by_name(self, name: str) -> LibraryUser | None:
+        from models.users import active_users
+        return active_users.get(name)
+
+
 
 def main():
     # ─── Setup ────────────────────────────────────────────────────────────────

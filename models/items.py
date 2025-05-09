@@ -28,6 +28,7 @@ class LibraryItem(ABC):
         self.publication_year = publication_year
         self.language = language
         self.status = status
+        self.reservation_queue = [] 
         
         from patterns.state.item_state import AvailableState
 
