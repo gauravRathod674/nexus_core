@@ -1,36 +1,51 @@
 from datetime import datetime, timedelta
-from enum import Enum
-
+from enum import Enum, auto
 
 class ReservationStatus(Enum):
-    ACTIVE = "Active"
-    EXPIRED = "Expired"
-    CANCELLED = "Cancelled"
-
+    PENDING   = auto()   # waiting in line
+    ACTIVE    = auto()   # hold is live—user has X days to pick up
+    EXPIRED   = auto()
+    CANCELLED = auto()
 
 class Reservation:
-    def __init__(self, user_name: str, isbn: str, reservation_date: datetime, duration_days: int = 2):
-        self.user_name = user_name
-        self.isbn = isbn
-        self.reservation_date = reservation_date
-        self.expiry_date = reservation_date + timedelta(days=duration_days)
-        self.status = ReservationStatus.ACTIVE
+    def __init__(
+        self,
+        user_name: str,
+        isbn: str,
+        request_date: datetime,
+        hold_days: int = 2
+    ):
+        self.user_name      = user_name
+        self.isbn           = isbn
+        self.request_date   = request_date
+        self.hold_days      = hold_days
+        self.expiry_date    = None      # only set when hold becomes ACTIVE
+        self.status         = ReservationStatus.PENDING
 
-    def is_expired(self) -> bool:
+    def activate_hold(self):
+        """Turn a pending reservation into an active hold."""
+        self.status      = ReservationStatus.ACTIVE
+        self.expiry_date = datetime.now() + timedelta(days=self.hold_days)
+
+    def is_hold_over(self) -> bool:
+        """Has the active hold period passed?"""
+        if self.status != ReservationStatus.ACTIVE:
+            return False
         return datetime.now() > self.expiry_date
 
     def expire(self):
-        if self.status == ReservationStatus.ACTIVE:
-            self.status = ReservationStatus.EXPIRED
-            # Notify via observer (placeholder)
-            # subject.notify("reservation_expired", {"user": self.user_name, "isbn": self.isbn})
+        """Mark this reservation expired (pending or active)."""
+        self.status = ReservationStatus.EXPIRED
 
     def cancel(self):
-        if self.status == ReservationStatus.ACTIVE:
-            self.status = ReservationStatus.CANCELLED
+        """Cancel this reservation (pending or active)."""
+        self.status = ReservationStatus.CANCELLED
 
     def __str__(self):
-        return (
+        base = (
             f"Reservation(user={self.user_name}, isbn={self.isbn}, "
-            f"expires={self.expiry_date.date()}, status={self.status.name})"
+            f"status={self.status.name}"
         )
+        if self.status == ReservationStatus.ACTIVE:
+            return f"{base}, expires={self.expiry_date.date()})"
+        return base + ")"
