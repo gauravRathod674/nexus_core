@@ -26,24 +26,10 @@ class LibraryUser:
     def __str__(self):
         return f"{self.name} ({self.role.name})"
 
-    def get_borrow_limit(self) -> int:
-        if self.role == Role.STUDENT:
-            return 3
-        elif self.role == Role.RESEARCHER:
-            return 5
-        elif self.role == Role.FACULTY:
-            return 7
-        elif self.role == Role.LIBRARIAN:
-            return 10
-        return 0
+     def get_borrow_limit(self) -> int:
+        from utils.config import BORROW_LIMITS
+        return BORROW_LIMITS.get(self.role, 0)
 
     def get_borrow_duration(self) -> int:
-        if self.role == Role.STUDENT:
-            return 14
-        elif self.role == Role.RESEARCHER:
-            return 21
-        elif self.role == Role.FACULTY:
-            return 30
-        elif self.role == Role.LIBRARIAN:
-            return 60
-        return 0
+        from utils.config import BORROW_DURATIONS
+        return BORROW_DURATIONS.get(self.role, 0)
