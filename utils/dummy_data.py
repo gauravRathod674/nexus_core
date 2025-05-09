@@ -90,40 +90,16 @@ def get_dummy_items():
         )
     ]
 
+DUMMY_USERS = [
+    LibraryUser("Gaurav Rathod",   "gaurav@example.com",   "hash1", Role.STUDENT),
+    LibraryUser("Mohsin Pathan",   "mohsin@example.com",   "hash2", Role.RESEARCHER),
+    LibraryUser("Chandresh Thakkar","chandresh@example.edu","hash3", Role.FACULTY),
+    LibraryUser("Nitesh Sachde",   "nitesh@example.com",   "hash4", Role.GUEST),
+    LibraryUser("Sourish Dasgupta","sourish@example.com", "hash5", Role.LIBRARIAN),
+]
+
 def get_dummy_users():
-    """ Returns a list of dummy library users for each role. """
-    return [
-        LibraryUser(
-            name="Gaurav Rathod",
-            email="gaurav.Rathod@example.com",
-            password_hash="hash_gaurav",
-            role=Role.STUDENT,
-        ),
-        LibraryUser(
-            name="Mohsin Pathan",
-            email="mohsin.Pathan@example.com",
-            password_hash="hash_mohsin",
-            role=Role.RESEARCHER,
-        ),
-        LibraryUser(
-            name="Chandresh Thakkar",
-            email="chandresh.Thakkar@example.edu",
-            password_hash="hash_chandresh",
-            role=Role.FACULTY,
-        ),
-        LibraryUser(
-            name="Nitesh Sachde",
-            email="nitesh.Sachde@example.com",
-            password_hash="hash_nitesh",
-            role=Role.GUEST,
-        ),
-        LibraryUser(
-            name="Sourish Dasgupta",
-            email="sourish.Dasgupta@example.com",
-            password_hash="hash_sourish",
-            role=Role.LIBRARIAN,
-        )
-    ]
+    return DUMMY_USERS
 
 def get_dummy_notifications():
     """ Returns a list of sample notifications for users. """
