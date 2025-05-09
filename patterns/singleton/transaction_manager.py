@@ -9,6 +9,7 @@ from models.transactions import BorrowingTransaction, TransactionStatus
 from models.reservation import Reservation, ReservationStatus
 from .singleton import Singleton
 from patterns.observer.notification_center import NotificationCenter
+from patterns.decorator.decorator import with_due_date_reminder, with_priority_borrowing
 
 
 class TransactionManager(Singleton):
@@ -30,6 +31,8 @@ class TransactionManager(Singleton):
         self._initialized = True    
 
     # ─── Borrow ────────────────────────────────────────────────────────────────
+    @with_due_date_reminder
+    @with_priority_borrowing
     def borrow_item(self,  user: "LibraryUser", item: "LibraryItem"):
         # 1) If book is RESERVED, only the first active reserver can borrow
         queue = self.reservation_queues.get(item.isbn, [])
