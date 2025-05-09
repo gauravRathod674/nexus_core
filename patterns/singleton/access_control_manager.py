@@ -14,7 +14,7 @@ class AccessControlManager(Singleton):
             return
         self._initialized = True
 
-    def can_borrow(self, user: LibraryUser, item: LibraryItem) -> Tuple[bool, str]:
+    def can_borrow(self, user: LibraryUser, item: LibraryItem):
         if user.role == Role.GUEST:
             return False, "Guests cannot borrow items."
 
@@ -27,7 +27,7 @@ class AccessControlManager(Singleton):
 
         return True, ""
 
-    def can_reserve(self, user: LibraryUser, item: LibraryItem) -> Tuple[bool, str]:
+    def can_reserve(self, user: LibraryUser, item: LibraryItem):
         if user.role == Role.GUEST:
             return False, "Guests cannot place reservations."
 
@@ -36,7 +36,7 @@ class AccessControlManager(Singleton):
 
         return True, ""
 
-    def can_download(self, user: LibraryUser, item: LibraryItem) -> Tuple[bool, str]:
+    def can_download(self, user: LibraryUser, item: LibraryItem):
         digital_kinds = {"E-Book", "Audiobook"}
         if item.item_type() not in digital_kinds:
             return False, "This item is not available for download."
@@ -44,7 +44,7 @@ class AccessControlManager(Singleton):
             return False, "Guests cannot download digital content."
         return True, ""
 
-    def can_request_paper(self, user: LibraryUser) -> Tuple[bool, str]:
+    def can_request_paper(self, user: LibraryUser):
         """
         Restricted digital collections (e.g., archives, research papers).
         """
@@ -52,7 +52,7 @@ class AccessControlManager(Singleton):
             return True, ""
         return False, "Only Faculty, Researchers, and Librarians may request research papers."
 
-    def can_edit_catalog(self, user: LibraryUser) -> Tuple[bool, str]:
+    def can_edit_catalog(self, user: LibraryUser):
         if user.role == Role.LIBRARIAN:
             return True, ""
         return False, "Only Librarians may edit the catalog."
