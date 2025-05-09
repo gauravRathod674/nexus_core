@@ -193,6 +193,12 @@ class TransactionManager(Singleton):
         from models.users import active_users
         return active_users.get(name)
 
+    def _get_all_items(self):
+        # In a real app, fetch from your catalog; here, we can
+        # keep a list you populate at setup (like active_users)
+        from models.items import active_items
+        return active_items
+
 
 
 def main():
