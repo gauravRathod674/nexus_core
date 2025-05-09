@@ -40,7 +40,6 @@ class LibraryItem(ABC):
     def update_status(self, new_status: ItemStatus):
         self.status = new_status
 
-    # Delegate actions to current state
     def borrow(self, user):
         return self._state.borrow(self, user)
 
