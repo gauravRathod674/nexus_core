@@ -1,4 +1,7 @@
 from datetime import datetime, timedelta
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from models.items import LibraryItem
 
 from models.users import LibraryUser, Role
 from models.items import LibraryItem, ItemStatus, PrintedBook
@@ -26,7 +29,7 @@ class TransactionManager(Singleton):
         self._initialized = True
 
     # ─── Borrow ────────────────────────────────────────────────────────────────
-    def borrow_item(self, user: LibraryUser, item: LibraryItem):
+    def borrow_item(self,  user: "LibraryUser", item: "LibraryItem"):
         # 1) If book is RESERVED, only the first active reserver can borrow
         queue = self.reservation_queues.get(item.isbn, [])
         first_hold = self._get_first_active_reservation(item.isbn)

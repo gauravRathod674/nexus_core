@@ -1,8 +1,8 @@
-from abc import ABC, abstractmethod
-from typing import List
 from enum import Enum
+from typing import List
+from abc import ABC, abstractmethod
 
-# Enum for item status
+
 class ItemStatus(Enum):
     AVAILABLE = "Available"
     CHECKED_OUT = "Checked Out"
@@ -10,7 +10,6 @@ class ItemStatus(Enum):
     UNDER_REVIEW = "Under Review"
 
 
-# Base class for all library items
 class LibraryItem(ABC):
     def __init__(
         self,
@@ -29,26 +28,29 @@ class LibraryItem(ABC):
         self.publication_year = publication_year
         self.language = language
         self.status = status
-    
+        
+        from patterns.state.item_state import AvailableState
+
+        self._state = AvailableState()
+
     @abstractmethod
     def item_type(self) -> str:
         pass
-    
-    def __str__(self):
-        genres_str = ", ".join(self.genres)
-        return (
-            f"[{self.item_type()}] {self.title} (ISBN: {self.isbn})\n"
-            f"  Authors: {', '.join(self.authors)} | Year: {self.publication_year} | "
-            f"Language: {self.language} | Genres: {genres_str} | Status: {self.status.name}"
-        )
 
     def update_status(self, new_status: ItemStatus):
-        if not isinstance(new_status, ItemStatus):
-            raise ValueError("Invalid status type")
         self.status = new_status
 
+    # Delegate actions to current state
+    def borrow(self, user):
+        return self._state.borrow(self, user)
 
-# Subclass for EBooks
+    def return_item(self, user):
+        return self._state.return_item(self, user)
+
+    def reserve(self, user):
+        return self._state.reserve(self, user)
+
+
 class EBook(LibraryItem):
     def __init__(
         self,
@@ -59,19 +61,20 @@ class EBook(LibraryItem):
         publication_year: int,
         language: str,
         status: ItemStatus,
-        file_format: str
+        file_format: str,
     ):
-        super().__init__(title, authors, isbn, genres, publication_year, language, status)
+        super().__init__(
+            title, authors, isbn, genres, publication_year, language, status
+        )
         self.file_format = file_format
-
-    def __str__(self):
-        return f"{super().__str__()}, Format: {self.file_format}"
 
     def item_type(self) -> str:
         return "E-Book"
 
+    def __str__(self) -> str:
+        return f"{super().__str__()}, Format: {self.file_format}"
 
-# Subclass for PrintedBooks
+
 class PrintedBook(LibraryItem):
     def __init__(
         self,
@@ -82,19 +85,20 @@ class PrintedBook(LibraryItem):
         publication_year: int,
         language: str,
         status: ItemStatus,
-        shelf_location: str
+        shelf_location: str,
     ):
-        super().__init__(title, authors, isbn, genres, publication_year, language, status)
+        super().__init__(
+            title, authors, isbn, genres, publication_year, language, status
+        )
         self.shelf_location = shelf_location
-
-    def __str__(self):
-        return f"{super().__str__()}, Shelf: {self.shelf_location}"
 
     def item_type(self) -> str:
         return "Printed Book"
 
+    def __str__(self) -> str:
+        return f"{super().__str__()}, Shelf: {self.shelf_location}"
 
-# Subclass for Audiobooks
+
 class Audiobook(LibraryItem):
     def __init__(
         self,
@@ -105,19 +109,20 @@ class Audiobook(LibraryItem):
         publication_year: int,
         language: str,
         status: ItemStatus,
-        duration_minutes: int
+        duration_minutes: int,
     ):
-        super().__init__(title, authors, isbn, genres, publication_year, language, status)
+        super().__init__(
+            title, authors, isbn, genres, publication_year, language, status
+        )
         self.duration_minutes = duration_minutes
-
-    def __str__(self):
-        return f"{super().__str__()}, Duration: {self.duration_minutes} mins"
 
     def item_type(self) -> str:
         return "Audiobook"
 
+    def __str__(self) -> str:
+        return f"{super().__str__()}, Duration: {self.duration_minutes} mins"
 
-# Subclass for ResearchPapers
+
 class ResearchPaper(LibraryItem):
     def __init__(
         self,
@@ -128,13 +133,15 @@ class ResearchPaper(LibraryItem):
         publication_year: int,
         language: str,
         status: ItemStatus,
-        journal: str
+        journal: str,
     ):
-        super().__init__(title, authors, isbn, genres, publication_year, language, status)
+        super().__init__(
+            title, authors, isbn, genres, publication_year, language, status
+        )
         self.journal = journal
-
-    def __str__(self):
-        return f"{super().__str__()}, Journal: {self.journal}"
 
     def item_type(self) -> str:
         return "Research Paper"
+
+    def __str__(self) -> str:
+        return f"{super().__str__()}, Journal: {self.journal}"
