@@ -5,6 +5,12 @@ from models.notification import Notification
 from models.reservation import Reservation
 from models.transactions import BorrowingTransaction, TransactionStatus
 from patterns.factory.item_factory import LibraryItemFactory
+from patterns.builder.builder import (
+    EBookBuilder,
+    PrintedBookBuilder,
+    ResearchPaperBuilder,
+    AudiobookBuilder,
+)
 
 def get_dummy_items():
     """ Returns a list of dummy library items covering all types, built via our Factory. """
@@ -37,6 +43,17 @@ def get_dummy_items():
             status=ItemStatus.AVAILABLE,
             file_format="ePub",
         ),
+
+        EBookBuilder()
+            .with_title("Machine Learning with Python")
+            .set_authors(["Francois Chollet"])
+            .with_isbn("9781617294443")
+            .set_genres(["AI", "Deep Learning"])
+            .with_publication_year(2017)
+            .with_language("English")
+            .with_status(ItemStatus.AVAILABLE)
+            .with_file_format("PDF")
+            .build(),
         LibraryItemFactory.create(
             "printedbook",
             title="Clean Code",
@@ -103,6 +120,8 @@ def get_dummy_items():
             status=ItemStatus.AVAILABLE,
             duration_minutes=650,
         ),
+      
+
     ]
 
 DUMMY_USERS = [
