@@ -50,6 +50,18 @@ class LibraryItem(ABC):
 
     def reserve(self, user):
         return self._state.reserve(self, user)
+    
+    def __str__(self) -> str:
+        return (
+            f"Type: {self.item_type()}, "
+            f"Title: {self.title}, "
+            f"Authors: {', '.join(self.authors)}, "
+            f"ISBN: {self.isbn}, "
+            f"Genres: {', '.join(self.genres)}, "
+            f"Year: {self.publication_year}, "
+            f"Language: {self.language}, "
+            f"Status: {self.status.value}"
+        )
 
 class EBook(LibraryItem):
     def __init__(
