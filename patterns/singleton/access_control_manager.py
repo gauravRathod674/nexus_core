@@ -6,7 +6,7 @@ from typing import Tuple
 
 class AccessControlManager(Singleton):
     """
-    Singleton for all role‑based permission checks in Nexus Library.
+    Singleton for all role-based permission checks in Nexus Library.
     """
 
     def __init__(self):
@@ -75,7 +75,7 @@ def main():
 
     # Sample items
     items = [
-        EBook("E‑Python",    ["X. Author"], "EBK001", ["Tech"], 2021, "English", ItemStatus.AVAILABLE, file_format="PDF"),
+        EBook("E-Python",    ["X. Author"], "EBK001", ["Tech"], 2021, "English", ItemStatus.AVAILABLE, file_format="PDF"),
         PrintedBook("C++ 101",["Y. Author"], "PBK002", ["Tech"], 2019, "English", ItemStatus.AVAILABLE, shelf_location="A1"),
         Audiobook("Java Pro",["Z. Author"], "ABK003", ["Tech"], 2020, "English", ItemStatus.AVAILABLE, duration_minutes=300),
         ResearchPaper("Quantum AI", ["Q. Sci"], "RP004", ["Science"], 2022, "English", ItemStatus.AVAILABLE, journal="SciToday"),

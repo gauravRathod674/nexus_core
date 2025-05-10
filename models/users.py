@@ -17,7 +17,7 @@ class LibraryUser:
         self.email = email
         self.password_hash = password_hash
         self.role = role
-        self.current_loans: List[str] = []  # list of ISBNs
+        self.current_loans: List[str] = [] 
         active_users[self.name] = self
 
     def can_borrow(self, item_type: str) -> bool:

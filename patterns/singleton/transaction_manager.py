@@ -22,12 +22,11 @@ class TransactionManager(Singleton):
     """
 
     def __init__(self):
-        # only initialize once in this singleton
         if hasattr(self, "_initialized"):
             return
 
-        self.transactions = []  # list of BorrowingTransaction
-        self.reservation_queues = {}  # isbn -> list of Reservation
+        self.transactions = []  
+        self.reservation_queues = {} 
         self._initialized = True    
 
     # ─── Borrow ────────────────────────────────────────────────────────────────
