@@ -4,11 +4,19 @@ from models.users import LibraryUser, Role
 from models.notification import Notification
 from models.reservation import Reservation
 from models.transactions import BorrowingTransaction, TransactionStatus
+from patterns.factory.item_factory import LibraryItemFactory
 
 def get_dummy_items():
-    """ Returns a list of dummy library items covering all types. """
+    """ Returns a list of dummy library items covering all types, built via our Factory. """
+
+    LibraryItemFactory.register("ebook", EBook)
+    LibraryItemFactory.register("printedbook", PrintedBook)
+    LibraryItemFactory.register("researchpaper", ResearchPaper)
+    LibraryItemFactory.register("audiobook", Audiobook)
+
     return [
-        EBook(
+        LibraryItemFactory.create(
+            "ebook",
             title="Deep Learning with Python",
             authors=["Francois Chollet"],
             isbn="9781617294433",
@@ -16,9 +24,10 @@ def get_dummy_items():
             publication_year=2017,
             language="English",
             status=ItemStatus.AVAILABLE,
-            file_format="PDF"
+            file_format="PDF",
         ),
-        EBook(
+        LibraryItemFactory.create(
+            "ebook",
             title="Automate the Boring Stuff",
             authors=["Al Sweigart"],
             isbn="9781593275990",
@@ -26,9 +35,10 @@ def get_dummy_items():
             publication_year=2019,
             language="English",
             status=ItemStatus.AVAILABLE,
-            file_format="ePub"
+            file_format="ePub",
         ),
-        PrintedBook(
+        LibraryItemFactory.create(
+            "printedbook",
             title="Clean Code",
             authors=["Robert C. Martin"],
             isbn="9780132350884",
@@ -36,9 +46,10 @@ def get_dummy_items():
             publication_year=2008,
             language="English",
             status=ItemStatus.AVAILABLE,
-            shelf_location="A3-42"
+            shelf_location="A3-42",
         ),
-        PrintedBook(
+        LibraryItemFactory.create(
+            "printedbook",
             title="The Pragmatic Programmer",
             authors=["Andrew Hunt", "David Thomas"],
             isbn="9780201616224",
@@ -46,9 +57,10 @@ def get_dummy_items():
             publication_year=1999,
             language="English",
             status=ItemStatus.AVAILABLE,
-            shelf_location="B1-15"
+            shelf_location="B1-15",
         ),
-        ResearchPaper(
+        LibraryItemFactory.create(
+            "researchpaper",
             title="Attention Is All You Need",
             authors=["Ashish Vaswani", "Noam Shazeer", "Niki Parmar"],
             isbn="10.48550/arXiv.1706.03762",
@@ -56,9 +68,10 @@ def get_dummy_items():
             publication_year=2017,
             language="English",
             status=ItemStatus.AVAILABLE,
-            journal="NeurIPS"
+            journal="NeurIPS",
         ),
-        ResearchPaper(
+        LibraryItemFactory.create(
+            "researchpaper",
             title="ImageNet Classification with Deep Convolutional Neural Networks",
             authors=["Alex Krizhevsky", "Ilya Sutskever", "Geoffrey E. Hinton"],
             isbn="10.1145/3065386",
@@ -66,9 +79,10 @@ def get_dummy_items():
             publication_year=2012,
             language="English",
             status=ItemStatus.AVAILABLE,
-            journal="NIPS"
+            journal="NIPS",
         ),
-        Audiobook(
+        LibraryItemFactory.create(
+            "audiobook",
             title="The Hobbit",
             authors=["J.R.R. Tolkien"],
             isbn="9780261103344",
@@ -76,9 +90,10 @@ def get_dummy_items():
             publication_year=1937,
             language="English",
             status=ItemStatus.AVAILABLE,
-            duration_minutes=720
+            duration_minutes=720,
         ),
-        Audiobook(
+        LibraryItemFactory.create(
+            "audiobook",
             title="1984",
             authors=["George Orwell"],
             isbn="9780451524935",
@@ -86,8 +101,8 @@ def get_dummy_items():
             publication_year=1949,
             language="English",
             status=ItemStatus.AVAILABLE,
-            duration_minutes=650
-        )
+            duration_minutes=650,
+        ),
     ]
 
 DUMMY_USERS = [

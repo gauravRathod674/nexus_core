@@ -20,10 +20,3 @@ class UserObserver(Observer):
                 "Due Date Approaching",
                 f"Reminder: The due date for '{item.title}' is on {due_date}. Please return or renew it in time."
             )
-
-        elif event_type == 'book_returned_notify_next' and user and item:
-            NotificationService.send_notification(
-                user,
-                "Book Returned - You're Next!",
-                f"'{item.title}' has been returned. You're next in line to borrow it!"
-            )

@@ -174,9 +174,9 @@ class TransactionManager(Singleton):
         if queue and queue[0].is_hold_over():
             expired_res = queue[0]
             expired_res.expire()
-            from patterns.observer.notification_center import NotificationCenter
+            # from patterns.observer.notification_center import NotificationCenter
             user = self._find_user_by_name(expired_res.user_name)
-            NotificationCenter.get_subject().notify('reservation_expired', user=user, item=item)
+            # NotificationCenter.get_subject().notify('reservation_expired', user=user, item=item)
             queue.pop(0)
 
         # 2) Promote next pending
